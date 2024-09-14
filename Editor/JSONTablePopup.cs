@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using System.IO;
 
-namespace Achieve.Table.Editor
+namespace Achieve.TableCraft.Editor
 {
     public class JSONTablePopup : EditorWindow
     {

@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
 
-namespace Achieve.Table
+namespace Achieve.TableCraft
 {
     public class EncryptionUtility
     {

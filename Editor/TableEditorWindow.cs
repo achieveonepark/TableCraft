@@ -5,7 +5,7 @@ using System.IO;
 using System.Reflection;
 using System;
 
-namespace Achieve.Table.Editor
+namespace Achieve.TableCraft.Editor
 {
     public class TableEditorWindow : EditorWindow
     {

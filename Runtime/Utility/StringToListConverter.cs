@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Achieve.Table
+namespace Achieve.TableCraft
 {
     public class StringToListConverter
     {
