@@ -11,9 +11,9 @@ namespace com.achieve.scripting.table.editor
         private List<ColumnData> columns = new List<ColumnData>();
         private Vector2 scrollPos;
         private string[] dataTypes = 
-            { "int", "short", "ushort", "long", "ulong",
+            { "int", "uint", "short", "ushort", "long", "ulong",
             "float", "double", "decimal",
-            "char", "string", "bool" };
+            "string", "bool" };
         private float columnWidth = 150f;
 
         private class ColumnData
