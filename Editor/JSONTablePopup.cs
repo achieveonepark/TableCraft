@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using System.IO;
 
-namespace com.achieve.scripting.table.editor
+namespace Achieve.Table.Editor
 {
     public class JSONTablePopup : EditorWindow
     {

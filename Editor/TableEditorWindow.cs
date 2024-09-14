@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System;
-using Newtonsoft.Json;
 
-namespace com.achieve.scripting.table.editor
+namespace Achieve.Table.Editor
 {
     public class TableEditorWindow : EditorWindow
     {
