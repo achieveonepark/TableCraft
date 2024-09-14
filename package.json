@@ -1,0 +1,24 @@
+{
+  "name": "com.achieve.scripting.table",
+  "displayName": "Achieve Table",
+  "author": "Achieveone",
+  "version": "0.0.1-beta.1",
+  "unity": "2022.3",
+  "description": "Json manages table data and provides functions for use at runtime.",
+  "keywords": [
+    "Data",
+    "Table"
+  ],
+  "dependencies": {
+    "com.unity.test-framework": "1.0.16"
+  },
+  "documentationUrl": "https://achieveonepark.github.io/cording-library/Documents/AchievePurchase/AchievePurchase/",
+  "changelogUrl": "https://github.com/achieveonepark/AchievePurchase/blob/main/CHANGELOG.md",
+  "repository": {
+    "url": "https://github.com/achieveonepark/AchievePurchase",
+    "type": "git"
+  },
+  "_upm": {
+    "changelog": "## Added\n- Package release\n- Adding Unity IAP basic features"
+  }
+}
