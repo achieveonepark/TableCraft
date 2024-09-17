@@ -12,7 +12,7 @@ namespace Achieve.TableCraft.Editor
         private List<string> classFiles = new List<string>();
         private string selectedClassFile = "";
         private List<FieldInfo> classFields = new List<FieldInfo>();
-        private List<RowData> tableData = new List<RowData>();
+        private List<Creator.RowData> tableData = new List<Creator.RowData>();
         private Vector2 scrollPos;
         private Type selectedClassType;
         private GUILayoutOption[] options = { GUILayout.Width(100), GUILayout.ExpandWidth(false) };
@@ -88,7 +88,7 @@ namespace Achieve.TableCraft.Editor
                     using (new EditorGUILayout.VerticalScope())
                     {
                         EditorGUILayout.LabelField(field.Name, EditorStyles.boldLabel, options);
-                        EditorGUILayout.LabelField(GetFieldType(field), EditorStyles.miniLabel, options);
+                        EditorGUILayout.LabelField(Creator.GetFieldType(field), EditorStyles.miniLabel, options);
                     }
                 }
             }
@@ -102,7 +102,7 @@ namespace Achieve.TableCraft.Editor
                     for (int j = 0; j < tableData[i].Key.Count; j++)
                     {
                         var field = classFields[j];
-                        string fieldType = GetFieldType(field);
+                        string fieldType = Creator.GetFieldType(field);
                         var dataStr = tableData[i].Value[j] != null ? tableData[i].Value[j].ToString() : string.Empty;
                         switch (fieldType)
                         {
@@ -141,71 +141,16 @@ namespace Achieve.TableCraft.Editor
             EditorGUILayout.EndScrollView();
         }
 
-        List<int> ConvertStringToIntArray(string input)
-        {
-            List<int> result = new List<int>();
-            if (!string.IsNullOrEmpty(input))
-            {
-                string[] parts = input.Split(',');
-                foreach (string part in parts)
-                {
-                    if (int.TryParse(part.Trim(), out int value))
-                    {
-                        result.Add(value);
-                    }
-                }
-            }
-            return result;
-        }
-
-        List<float> ConvertStringToFloatArray(string input)
-        {
-            List<float> result = new List<float>();
-            if (!string.IsNullOrEmpty(input))
-            {
-                string[] parts = input.Split(',');
-                foreach (string part in parts)
-                {
-                    if (float.TryParse(part.Trim(), out float value))
-                    {
-                        result.Add(value);
-                    }
-                }
-            }
-            return result;
-        }
-
-        List<string> ConvertStringToStringArray(string input)
-        {
-            List<string> result = new List<string>();
-            if (!string.IsNullOrEmpty(input))
-            {
-                string[] parts = input.Split(',');
-                foreach (string part in parts)
-                {
-                    result.Add(part.Trim());
-                }
-            }
-            return result;
-        }
-
         void AddRow()
         {
-            RowData newRow = new RowData(classFields);
+            Creator.RowData newRow = new Creator.RowData(classFields);
             tableData.Add(newRow);
         }
 
         void SaveJsonData()
         {
             string path = "Assets/Resources/" + selectedClassFile + ".json";
-            string json = JsonUtility.ToJson(new TableWrapper(tableData), true);
-
-#if ENABLE_ENCRYPT
-            EncryptionUtility.SaveEncryptedJson(path, json, "ejkrqiwebmvl1kry");
-#else
-
-#endif
-            Debug.Log("JSON saved to: " + path);
+            Creator.SaveJson(tableData, path);
         }
 
         void LoadClassFields()
@@ -214,19 +159,7 @@ namespace Achieve.TableCraft.Editor
             tableData.Clear();
             string className = selectedClassFile;
 
-            string filePath = $"Assets/Resources/{className}.json";
-
-            if(File.Exists(filePath))
-            {
-#if ENABLE_ENCRYPT
-                var jsonFile = EncryptionUtility.LoadDecryptedJson(filePath, "ejkrqiwebmvl1kry");
-#else
-                var jsonFile = string.Empty;
-#endif
-                var wrapper = JsonUtility.FromJson<TableWrapper>(jsonFile);
-                tableData = wrapper.table;
-            }
-
+            tableData = Creator.LoadJson(className);
             selectedClassType = Type.GetType(className + ", Assembly-CSharp");
 
             if (selectedClassType != null)
@@ -237,64 +170,6 @@ namespace Achieve.TableCraft.Editor
             else
             {
                 Debug.LogError("Class not found: " + className);
-            }
-        }
-
-        public static string GetFieldType(FieldInfo field)
-        {
-            return field.FieldType.Name switch
-            {
-                "UInt32" => "uint",
-                "Int32" => "int",
-                "Int16" => "short",
-                "UInt16" => "ushort",
-                "String" => "string",
-                "Int64" => "long",
-                "UInt64" => "ulong",
-                "Single" => "float",
-                "Double" => "double",
-                "Decimal" => "decimal",
-                "Boolean" => "boolean",
-                "UInt32[]" => "uint[]",
-                "Int32[]" => "int[]",
-                "Int16[]" => "short[]",
-                "UInt16[]" => "ushort[]",
-                "String[]" => "string[]",
-                "Int64[]" => "long[]",
-                "UInt64[]" => "ulong[]",
-                "Single[]" => "float[]",
-                "Double[]" => "double[]",
-                "Decimal[]" => "decimal[]",
-                "Boolean[]" => "boolean[]",
-                _ => ""
-            };
-        }
-
-        [System.Serializable]
-        public class RowData
-        {
-            public List<string> Key = new List<string>();
-            public List<object> Value = new List<object>();
-
-            public RowData(List<FieldInfo> classFields)
-            {
-                for (int i = 0; i < classFields.Count; i++)
-                {
-                    Key.Add(classFields[i].Name);
-                    Value.Add(null);
-                }
-            }
-        }
-
-
-        [System.Serializable]
-        public class TableWrapper
-        {
-            public List<RowData> table;
-
-            public TableWrapper(List<RowData> data)
-            {
-                table = data;
             }
         }
     }

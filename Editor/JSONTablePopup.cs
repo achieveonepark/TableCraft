@@ -8,20 +8,10 @@ namespace Achieve.TableCraft.Editor
     public class JSONTablePopup : EditorWindow
     {
         private string className = "NewClass";
-        private List<ColumnData> columns = new List<ColumnData>();
+        private List<Creator.ColumnData> columns = new List<Creator.ColumnData>();
         private Vector2 scrollPos;
-        private string[] dataTypes = 
-            { "int", "uint", "short", "ushort", "long", "ulong",
-            "float", "double", "decimal",
-            "string", "bool" };
         private float columnWidth = 150f;
-
-        private class ColumnData
-        {
-            public string columnName;
-            public int dataTypeIndex;
-            public bool isArray;
-        }
+        private string[] dataTypes;
 
         [MenuItem("My Tools/Create C# Class and JSON")]
         public static void ShowWindow()
@@ -33,12 +23,13 @@ namespace Achieve.TableCraft.Editor
         {
             if(columns.Count == 0)
             {
-                columns.Add(new ColumnData { columnName = "id", dataTypeIndex = 0 });
+                columns.Add(new Creator.ColumnData { columnName = "id", dataTypeIndex = 0 });
             }
         }
         
         void OnGUI()
         {
+            dataTypes ??= Creator.DataTypes;
             GUILayout.Label("Create C# Class and JSON", EditorStyles.boldLabel);
 
             className = EditorGUILayout.TextField("Class Name", className);
@@ -46,7 +37,7 @@ namespace Achieve.TableCraft.Editor
             EditorGUILayout.Space();
             if (GUILayout.Button("Add Field"))
             {
-                columns.Add(new ColumnData { columnName = "FieldName", dataTypeIndex = 0 });
+                columns.Add(new Creator.ColumnData { columnName = "FieldName", dataTypeIndex = 0 });
             }
 
             using (new GUILayout.HorizontalScope())
@@ -126,24 +117,6 @@ namespace Achieve.TableCraft.Editor
 
             AssetDatabase.Refresh();
             Debug.Log("C# class and JSON file created at: " + folderPath);
-        }
-
-        [System.Serializable]
-        private class ColumnJsonData
-        {
-            public string columnName;
-            public string dataType;
-        }
-
-        [System.Serializable]
-        private class Wrapper
-        {
-            public List<ColumnJsonData> columns;
-
-            public Wrapper(List<ColumnJsonData> data)
-            {
-                columns = data;
-            }
         }
     }
 }
