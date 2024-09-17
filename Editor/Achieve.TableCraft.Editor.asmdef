@@ -2,7 +2,8 @@
     "name": "Achieve.TableCraft.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:0bdfd84c39ba2574a8dec373a003e84e"
+        "GUID:0bdfd84c39ba2574a8dec373a003e84e",
+        "GUID:08eba284b81cc6646b64053dd4afa471"
     ],
     "includePlatforms": [
         "Editor"
@@ -13,6 +14,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.achieve.data-protector",
+            "expression": "0.0.0",
+            "define": "ENABLE_ENCRYPT"
+        }
+    ],
     "noEngineReferences": false
 }

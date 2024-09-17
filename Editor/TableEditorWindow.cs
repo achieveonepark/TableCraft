@@ -14,8 +14,8 @@ namespace Achieve.TableCraft.Editor
         private List<FieldInfo> classFields = new List<FieldInfo>();
         private List<RowData> tableData = new List<RowData>();
         private Vector2 scrollPos;
-        private float columnWidth = 150f;
         private Type selectedClassType;
+        private GUILayoutOption[] options = { GUILayout.Width(100), GUILayout.ExpandWidth(false) };
 
         [MenuItem("My Tools/Manage C# Tables")]
         public static void ShowWindow()
@@ -35,6 +35,17 @@ namespace Achieve.TableCraft.Editor
 
         void OnGUI()
         {
+            DisplayTop();
+
+            if (classFields.Count > 0)
+            {
+                DisplayTable();
+                DisplayBottom();
+            }
+        }
+
+        void DisplayTop()
+        {
             GUILayout.Label("Manage C# Classes", EditorStyles.boldLabel);
 
             int selectedIndex = classFiles.IndexOf(selectedClassFile);
@@ -49,13 +60,11 @@ namespace Achieve.TableCraft.Editor
                 }
             }
 
-            if (classFields.Count > 0)
-            {
-                DisplayTable();
-            }
+        }
 
-            EditorGUILayout.Space();
-
+        void DisplayBottom()
+        {
+            GUILayout.FlexibleSpace();
             using (new EditorGUILayout.HorizontalScope())
             {
                 if (GUILayout.Button("Add Row", GUILayout.Width(100)))
@@ -72,26 +81,19 @@ namespace Achieve.TableCraft.Editor
 
         void DisplayTable()
         {
-            EditorGUILayout.Space();
-
             using (new EditorGUILayout.HorizontalScope())
             {
                 foreach (var field in classFields)
                 {
-                    GUILayout.BeginVertical();
-                    EditorGUILayout.LabelField(field.Name, EditorStyles.boldLabel, GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true));
-                    EditorGUILayout.LabelField(GetFieldType(field), EditorStyles.miniLabel, GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true));
-                    GUILayout.EndVertical();
+                    using (new EditorGUILayout.VerticalScope())
+                    {
+                        EditorGUILayout.LabelField(field.Name, EditorStyles.boldLabel, options);
+                        EditorGUILayout.LabelField(GetFieldType(field), EditorStyles.miniLabel, options);
+                    }
                 }
             }
 
-            EditorGUILayout.Space();
-            OnDisplayTable();
-        }
-
-        void OnDisplayTable()
-        {
-            scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.Height(400));
+            scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.Height(700));
 
             for (int i = 0; i < tableData.Count; i++)
             {
@@ -104,26 +106,26 @@ namespace Achieve.TableCraft.Editor
                         var dataStr = tableData[i].Value[j] != null ? tableData[i].Value[j].ToString() : string.Empty;
                         switch (fieldType)
                         {
-                            case "int": if (int.TryParse(EditorGUILayout.TextField(dataStr, GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true)), out var intResult)) tableData[i].Value[j] = intResult; break;       
-                            case "short": if (short.TryParse(EditorGUILayout.TextField(dataStr, GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true)), out var shortResult)) tableData[i].Value[j] = shortResult;                                 break;
-                            case "ushort": if (ushort.TryParse(EditorGUILayout.TextField(dataStr, GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true)), out var ushortResult)) tableData[i].Value[j] = ushortResult; break;
-                            case "bool": if (bool.TryParse(EditorGUILayout.TextField(dataStr, GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true)), out var boolResult)) tableData[i].Value[j] = boolResult; break;
-                            case "decimal": if (decimal.TryParse(EditorGUILayout.TextField(dataStr, GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true)), out var decimalResult)) tableData[i].Value[j] = decimalResult; break;
-                            case "ulong": if (ulong.TryParse(EditorGUILayout.TextField(dataStr, GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true)), out var ulongResult)) tableData[i].Value[j] = ulongResult; break;
-                            case "long": if (long.TryParse(EditorGUILayout.TextField(dataStr, GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true)), out var longResult)) tableData[i].Value[j] = longResult; break;
-                            case "float": if (float.TryParse(EditorGUILayout.TextField(dataStr, GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true)), out var floatResult)) tableData[i].Value[j] = floatResult; break;
-                            case "double": if (double.TryParse(EditorGUILayout.TextField(dataStr, GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true)), out var doubleResult)) tableData[i].Value[j] = doubleResult; break;
-                            case "string": tableData[i].Value[j] = EditorGUILayout.TextField(dataStr, GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true)); break;
-                            case "int[]": tableData[i].Value[j] = StringToListConverter.ConvertStringToArray<int>(EditorGUILayout.TextField(StringToListConverter.ToString((int[])tableData[i].Value[j]), GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true))); break;
-                            case "short[]": tableData[i].Value[j] = StringToListConverter.ConvertStringToArray<short>(EditorGUILayout.TextField(dataStr, GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true))); break;
-                            case "ushort[]": tableData[i].Value[j] = StringToListConverter.ConvertStringToArray<ushort>(EditorGUILayout.TextField(dataStr, GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true))); break;
-                            case "bool[]": tableData[i].Value[j] = StringToListConverter.ConvertStringToArray<bool>(EditorGUILayout.TextField(dataStr, GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true))); break;
-                            case "decimal[]": tableData[i].Value[j] = StringToListConverter.ConvertStringToArray<decimal>(EditorGUILayout.TextField(dataStr, GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true))); break;
-                            case "ulong[]": tableData[i].Value[j] = StringToListConverter.ConvertStringToArray<ulong>(EditorGUILayout.TextField(dataStr, GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true))); break;
-                            case "long[]": tableData[i].Value[j] = StringToListConverter.ConvertStringToArray<long>(EditorGUILayout.TextField(dataStr, GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true))); break;
-                            case "float[]": tableData[i].Value[j] = StringToListConverter.ConvertStringToArray<float>(EditorGUILayout.TextField(dataStr, GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true))); break;
-                            case "double[]": tableData[i].Value[j] = StringToListConverter.ConvertStringToArray<double>(EditorGUILayout.TextField(dataStr, GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true))); break;
-                            case "string[]": tableData[i].Value[j] = StringToListConverter.ConvertStringToArray<string>(EditorGUILayout.TextField(dataStr, GUILayout.Width(columnWidth), GUILayout.ExpandWidth(true))); break;
+                            case "int": if (int.TryParse(EditorGUILayout.TextField(dataStr, options), out var intResult)) tableData[i].Value[j] = intResult; break;
+                            case "short": if (short.TryParse(EditorGUILayout.TextField(dataStr, options), out var shortResult)) tableData[i].Value[j] = shortResult; break;
+                            case "ushort": if (ushort.TryParse(EditorGUILayout.TextField(dataStr, options), out var ushortResult)) tableData[i].Value[j] = ushortResult; break;
+                            case "bool": if (bool.TryParse(EditorGUILayout.TextField(dataStr, options), out var boolResult)) tableData[i].Value[j] = boolResult; break;
+                            case "decimal": if (decimal.TryParse(EditorGUILayout.TextField(dataStr, options), out var decimalResult)) tableData[i].Value[j] = decimalResult; break;
+                            case "ulong": if (ulong.TryParse(EditorGUILayout.TextField(dataStr, options), out var ulongResult)) tableData[i].Value[j] = ulongResult; break;
+                            case "long": if (long.TryParse(EditorGUILayout.TextField(dataStr, options), out var longResult)) tableData[i].Value[j] = longResult; break;
+                            case "float": if (float.TryParse(EditorGUILayout.TextField(dataStr, options), out var floatResult)) tableData[i].Value[j] = floatResult; break;
+                            case "double": if (double.TryParse(EditorGUILayout.TextField(dataStr, options), out var doubleResult)) tableData[i].Value[j] = doubleResult; break;
+                            case "string": tableData[i].Value[j] = EditorGUILayout.TextField(dataStr, options); break;
+                            case "int[]": tableData[i].Value[j] = StringToListConverter.ConvertStringToArray<int>(EditorGUILayout.TextField(StringToListConverter.ToString((int[])tableData[i].Value[j]), options)); break;
+                            case "short[]": tableData[i].Value[j] = StringToListConverter.ConvertStringToArray<short>(EditorGUILayout.TextField(dataStr, options)); break;
+                            case "ushort[]": tableData[i].Value[j] = StringToListConverter.ConvertStringToArray<ushort>(EditorGUILayout.TextField(dataStr, options)); break;
+                            case "bool[]": tableData[i].Value[j] = StringToListConverter.ConvertStringToArray<bool>(EditorGUILayout.TextField(dataStr, options)); break;
+                            case "decimal[]": tableData[i].Value[j] = StringToListConverter.ConvertStringToArray<decimal>(EditorGUILayout.TextField(dataStr, options)); break;
+                            case "ulong[]": tableData[i].Value[j] = StringToListConverter.ConvertStringToArray<ulong>(EditorGUILayout.TextField(dataStr, options)); break;
+                            case "long[]": tableData[i].Value[j] = StringToListConverter.ConvertStringToArray<long>(EditorGUILayout.TextField(dataStr, options)); break;
+                            case "float[]": tableData[i].Value[j] = StringToListConverter.ConvertStringToArray<float>(EditorGUILayout.TextField(dataStr, options)); break;
+                            case "double[]": tableData[i].Value[j] = StringToListConverter.ConvertStringToArray<double>(EditorGUILayout.TextField(dataStr, options)); break;
+                            case "string[]": tableData[i].Value[j] = StringToListConverter.ConvertStringToArray<string>(EditorGUILayout.TextField(dataStr, options)); break;
                         }
                     }
 
@@ -197,8 +199,12 @@ namespace Achieve.TableCraft.Editor
         {
             string path = "Assets/Resources/" + selectedClassFile + ".json";
             string json = JsonUtility.ToJson(new TableWrapper(tableData), true);
-            EncryptionUtility.SaveEncryptedJson(path, json);
 
+#if ENABLE_ENCRYPT
+            EncryptionUtility.SaveEncryptedJson(path, json, "ejkrqiwebmvl1kry");
+#else
+
+#endif
             Debug.Log("JSON saved to: " + path);
         }
 
@@ -212,7 +218,11 @@ namespace Achieve.TableCraft.Editor
 
             if(File.Exists(filePath))
             {
-                var jsonFile = EncryptionUtility.LoadDecryptedJson(filePath);
+#if ENABLE_ENCRYPT
+                var jsonFile = EncryptionUtility.LoadDecryptedJson(filePath, "ejkrqiwebmvl1kry");
+#else
+                var jsonFile = string.Empty;
+#endif
                 var wrapper = JsonUtility.FromJson<TableWrapper>(jsonFile);
                 tableData = wrapper.table;
             }

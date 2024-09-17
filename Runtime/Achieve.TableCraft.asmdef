@@ -1,7 +1,9 @@
 {
     "name": "Achieve.TableCraft",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:08eba284b81cc6646b64053dd4afa471"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
@@ -9,6 +11,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.achieve.data-protector",
+            "expression": "0.0.0",
+            "define": "ENABLE_ENCRYPT"
+        }
+    ],
     "noEngineReferences": false
 }
