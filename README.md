@@ -1,4 +1,5 @@
-# AchieveTable
+# AchieveTable [Deprecated]
+
 
 TODO
 - 칼럼, 데이터형 UI 아랫줄 데이터들과 맞추기
